@@ -6,8 +6,7 @@ from app.nlp.cleaner import clean_text
 from app.nlp.summarizer import summarize
 from app.nlp.keywords import extract_keywords
 from app.nlp.sentiment import analyze_sentiment
-
-app = FastAPI(title="AI Document Analyzer")
+app = FastAPI(title="Document Analyzer")
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,26 +16,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 @app.post("/analyze")
 async def analyze_pdf(file: UploadFile = File(...)):
 
     try:
-        text = extract_text(file.file)
+        
+        raw_text = extract_text(file.file)
 
-        if not text:
+        if not raw_text:
             return {
                 "status": "failed",
-                "message": "No readable text found in PDF",
-                "note": "Scanned or image-based PDFs need OCR"
+                "message": "No readable text found",
+                "note": "Scanned PDFs need OCR"
             }
-
-        text = clean_text(text)
-
-        summary = summarize(text)
-        keywords = extract_keywords(text)
-        sentiment = analyze_sentiment(text)
+        
+        cleaned_text = clean_text(raw_text)
+        
+        summary = summarize(cleaned_text)
+        keywords = extract_keywords(cleaned_text)
+        sentiment = analyze_sentiment(cleaned_text)
 
         return {
             "status": "success",
@@ -45,8 +43,8 @@ async def analyze_pdf(file: UploadFile = File(...)):
             "sentiment": sentiment
         }
 
-    except Exception as e:
+    except Exception as error:
         return {
             "status": "error",
-            "message": str(e)
+            "message": str(error)
         }
