@@ -1,7 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import re
-
-
 def extract_keywords(text, top_k=10):
     words = re.findall(r"[a-zA-Z]{3,}", text.lower())
 
@@ -19,3 +17,4 @@ def extract_keywords(text, top_k=10):
 
     except ValueError:
         return list(set(words))[:top_k]
+
