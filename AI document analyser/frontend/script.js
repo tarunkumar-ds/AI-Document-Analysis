@@ -14,7 +14,7 @@ async function analyze() {
     document.getElementById("result").classList.add("hidden");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/analyze", {
+        const response = await fetch("https://ai-document-analysis.onrender.com", {
             method: "POST",
             body: formData
         });
@@ -50,3 +50,4 @@ async function analyze() {
         alert("Backend not running");
     }
 }
+
